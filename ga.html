@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoLandslide - AI Monitoring</title>
+  
+  <link rel="stylesheet" href="ga.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="fa-solid fa-mountain-sun logo-icon"></i>
+        <div>
+          <h2>GeoLandslide</h2>
+          <span class="sub-brand">AI MONITORING</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <span class="menu-header">MAIN</span>
+        <button class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-table-cells-large"></i> Dashboard
+        </button>
+        <button class="nav-item" data-tab="live-map">
+          <i class="fa-solid fa-map-location-dot"></i> Live Zone Map
+        </button>
+        <button class="nav-item" data-tab="iot-sensors">
+          <i class="fa-solid fa-microchip"></i> Live IoT Sensors
+        </button>
+        <button class="nav-item" data-tab="ai-prediction">
+          <i class="fa-solid fa-brain"></i> AI Prediction
+        </button>
+
+        <span class="menu-header">SYSTEM</span>
+        <button class="nav-item" data-tab="data-sources">
+          <i class="fa-solid fa-database"></i> Data Sources
+        </button>
+        <button class="nav-item" data-tab="architecture">
+          <i class="fa-solid fa-sitemap"></i> Architecture
+        </button>
+      </nav>
+
+      <div class="sidebar-status">
+        <span class="pulse-dot"></span>
+        <div>
+          <strong>System Online</strong>
+          <p>Monitoring active</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-panel">
+      
+      <!-- Top Navigation Header -->
+      <header class="top-header">
+        <div class="live-indicator">
+          <span class="dot-live"></span> LIVE &nbsp; <span id="liveClock">00:00:00 PM</span>
+        </div>
+        
+        <!-- Voice Announcement Controller -->
+        <div class="header-right">
+          <div class="voice-selector">
+            <select id="languageSelect">
+              <option value="en-IN">English (India)</option>
+              <option value="hi-IN">Hindi (हिंदी)</option>
+              <option value="bn-IN">Bengali (বাংলা)</option>
+            </select>
+            <button id="voiceAlertBtn" class="btn btn-alert">
+              <i class="fa-solid fa-volume-high"></i> Voice Alert
+            </button>
+          </div>
+          <button class="btn btn-primary" onclick="switchTab('live-map')">
+            <i class="fa-solid fa-map"></i> Open Live Map
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD -->
+      <section id="dashboard" class="tab-content active-tab">
+        <div class="page-title">
+          <small>NORTH EASTERN REGION OF INDIA</small>
+          <h1>Landslide Risk Monitoring</h1>
+          <p>Monitor environmental conditions, IoT sensor readings, and AI-generated landslide risk across vulnerable zones.</p>
+        </div>
+
+        <!-- Dynamic Alert Message Box -->
+        <div class="alert-banner" id="alertBanner">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="bannerMessage">CRITICAL ALERT: Shillong Zone reached critical safety thresholds. Evacuation recommended for high-risk slopes.</span>
+        </div>
+
+        <!-- Stat Widgets -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fa-solid fa-cloud-showers-heavy icon-stat"></i>
+            <div>
+              <span class="stat-label">Rainfall</span>
+              <h2 id="statRain">86 <small>mm</small></h2>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-droplet icon-stat"></i>
+            <div>
+              <span class="stat-label">Soil Moisture</span>
+              <h2 id="statMoisture">75 <small>%</small></h2>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-arrows-up-down-left-right icon-stat"></i>
+            <div>
+              <span class="stat-label">Ground Movement</span>
+              <h2 id="statMovement">7.0 <small>mm</small></h2>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-triangle-exclamation icon-stat danger"></i>
+            <div>
+              <span class="stat-label">Current Risk</span>
+              <h2 id="statRiskText" class="danger-text">CRITICAL <small>85/100</small></h2>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Layout Grid -->
+        <div class="dashboard-grid">
+          
+          <!-- Risk Status Box -->
+          <div class="panel-card flex-2">
+            <div class="panel-header">
+              <h3>Current Risk Status</h3>
+              <span class="badge badge-critical" id="currentRiskBadge">CRITICAL</span>
+            </div>
+            <div class="risk-summary">
+              <div class="score-circle">
+                <span id="riskScoreVal">85</span>
+                <small>/100</small>
+              </div>
+              <div class="risk-details">
+                <h2 id="zoneNameText">Shillong Zone</h2>
+                <p id="riskDescription">High rainfall, high soil moisture, elevated ground movement, abnormal ground tilt, steep slope detected.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monitoring Zone List -->
+          <div class="panel-card flex-1">
+            <div class="panel-header">
+              <h3>Monitoring Zones</h3>
+            </div>
+            <p class="sub-text">NER priority locations</p>
+            <div class="zone-list" id="zoneListContainer">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: LIVE MAP -->
+      <section id="live-map" class="tab-content">
+        <div class="page-title">
+          <h1>Live Zone Map</h1>
+          <p>Interactive geographical view of landslide risk across monitored NER locations.</p>
+        </div>
+
+        <div class="map-layout">
+          <div id="map" class="map-box"></div>
+          
+          <div class="panel-card map-panel">
+            <h2 id="mapZoneTitle">Shillong Monitoring Zone</h2>
+            <span class="badge badge-critical" id="mapBadge">CRITICAL</span>
+            
+            <div class="big-score">
+              <span id="mapRiskScore">83</span><small>/100</small>
+            </div>
+
+            <div class="specs-list">
+              <div class="spec-item"><span>Current Status</span><strong id="mapStatus">UNSAFE</strong></div>
+              <div class="spec-item"><span>Rainfall</span><strong id="mapRain">83 mm</strong></div>
+              <div class="spec-item"><span>Soil Moisture</span><strong id="mapMoisture">74 %</strong></div>
+              <div class="spec-item"><span>Ground Movement</span><strong id="mapMovement">6.9 mm</strong></div>
+              <div class="spec-item"><span>Tilt</span><strong id="mapTilt">3.5°</strong></div>
+            </div>
+
+            <button class="btn btn-voice-speak" id="mapVoiceBtn">
+              <i class="fa-solid fa-volume-high"></i> Play Zone Voice Alert
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: IOT SENSORS -->
+      <section id="iot-sensors" class="tab-content">
+        <div class="page-title">
+          <h1>Live IoT Telemetry</h1>
+          <p>Real-time environmental sensor trends.</p>
+        </div>
+        <div class="panel-card">
+          <div class="chart-wrapper">
+            <canvas id="sensorChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: AI PREDICTION -->
+      <section id="ai-prediction" class="tab-content">
+        <div class="page-title">
+          <h1>AI Landslide Prediction</h1>
+          <p>Risk factor weightings and model predictions.</p>
+        </div>
+      </section>
+
+      <!-- TAB 5: DATA SOURCES -->
+      <section id="data-sources" class="tab-content">
+        <div class="page-title"><h1>Data Sources</h1></div>
+      </section>
+
+      <!-- TAB 6: ARCHITECTURE -->
+      <section id="architecture" class="tab-content">
+        <div class="page-title"><h1>System Architecture</h1></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="ga.js"></script>
+</body>
+</html>
